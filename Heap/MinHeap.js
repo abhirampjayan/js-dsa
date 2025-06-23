@@ -1,6 +1,6 @@
 class MinHeap {
     constructor(values) {
-        this.values = values;
+        this.values = values || [];
     }
 
     add(value) {
@@ -30,6 +30,14 @@ class MinHeap {
         return this.values[index];
     }
 
+    getSmallest() {
+        if (!this.size()) return;
+        this.swap(0, this.size() - 1);
+        const removed = this.values.pop();
+        this.downHeapify(0);
+        return removed;
+    }
+
     swap(index1, index2) {
         [this.values[index1], this.values[index2]] = [this.values[index2], this.values[index1]];
     }
@@ -52,8 +60,24 @@ class MinHeap {
             smallest = right;
 
         if (smallest !== index) {
-            [this.values[index], this.values[smallest]] = [this.values[smallest], this.values[index]];
+            this.swap(smallest, index);
             this.heapify(smallest);
+        }
+    }
+
+    downHeapify(index) {
+        while (2 * index + 1 < this.size()) {
+            let x = Math.min(this.get(index), this.get(2 * index + 1));
+            if (this.get(2 * index + 2) !== undefined)
+                x = Math.min(x, this.get(2 * index + 2));
+            if (x === this.get(index)) return;
+            if (x === this.get(2 * index + 1)) {
+                this.swap(index, 2 * index + 1);
+                index = 2 * index + 1;
+            } else {
+                this.swap(index, 2 * index + 2);
+                index = 2 * index + 2;
+            }
         }
     }
 }
